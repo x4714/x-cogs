@@ -2,6 +2,7 @@ import discord
 from redbot.core import commands
 import aiohttp
 from urllib.parse import urlparse, parse_qs
+import re
 
 
 class emojiutil(commands.Cog):
@@ -13,12 +14,17 @@ class emojiutil(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_emojis=True)
-    async def steal(self, ctx, url: str):
+    async def steal(self, ctx, *, arg: str):
         """Steal an emoji from a URL and upload it to the server."""
+
+        # Extract actual URL if Markdown-style link is given
+        markdown_link = re.match(r'\[.*?\]\((.*?)\)', arg)
+        url = markdown_link.group(1) if markdown_link else arg
+
         parsed = urlparse(url)
 
         # Ensure this is a proper Discord CDN emoji URL
-        if not parsed.netloc.endswith("discordapp.com"):
+        if not parsed.netloc.endswith("discordapp.com") and not parsed.netloc.endswith("cdn.discordapp.com"):
             return await ctx.send("Invalid URL. Please provide a direct Discord emoji URL.")
 
         # Remove query string and get name from it

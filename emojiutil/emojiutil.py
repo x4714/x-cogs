@@ -68,7 +68,10 @@ class emojiutil(commands.Cog):
             # Upload as custom emoji
             try:
                 emoji = await ctx.guild.create_custom_emoji(name=name, image=image_data)
-                await ctx.send(f"Emoji added: <:{emoji.name}:{emoji.id}>")
+                if animated:
+                    await ctx.send(f"Animated emoji added: <a:{emoji.name}:{emoji.id}>")
+                else:
+                    await ctx.send(f"Emoji added: <:{emoji.name}:{emoji.id}>")
             except discord.HTTPException as e:
                 await ctx.send(f"Failed to add emoji from {url}: {e}")
             except discord.Forbidden:

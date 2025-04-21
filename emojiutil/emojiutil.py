@@ -35,6 +35,12 @@ class emojiutil(commands.Cog):
         if not name:
             return await ctx.send("Could not extract emoji name from URL.")
 
+        if base_url.endswith(".webp"):
+            if "animated" in qs and qs["animated"][0] == "true":
+                base_url = base_url.replace(".webp", ".gif")
+            else:
+                base_url = base_url.replace(".webp", ".png")
+
         # Get the image
         try:
             async with aiohttp.ClientSession() as session:
